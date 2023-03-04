@@ -1,4 +1,4 @@
-import {ethers, upgrades} from 'hardhat';
+import {ethers} from 'hardhat';
 import chai from 'chai';
 
 import chaiAsPromised from 'chai-as-promised';
@@ -36,9 +36,9 @@ describe('TFContractRegistry BasicTests', () => {
     })
 
     describe('we can register contracts', async () => {
-
+        
         it('deployer should be able to register contracts successfully', async () => {
-            const {registry, deployer} = await loadFixture(deployRegistry);
+            const {registry, deployer} = await deployRegistry();
 
             expect(registry.registerContract("contract://factory/anneliese", 43114,"0x36fFe38DEfDcfd48a4016cFE79F3AFcDAfFe123D"))
                 .to.emit(registry, 'ContractRegistered')
@@ -66,6 +66,9 @@ describe('TFContractRegistry BasicTests', () => {
                     43114,
                     "0x36fFe38DEfDcfd48a4016cFE79F3AFcDAfFe123D"
                 );
+
+            await expect( (await registry.getContracts("contract://factory/frank")).length ).to.eq(2);
+            await expect( (await registry.getContracts("contract://factory/anneliese")).length ).to.eq(1);
             
             expect(await registry.getContract("contract://factory/anneliese", 43114)).to.eq("0x36fFe38DEfDcfd48a4016cFE79F3AFcDAfFe123D");
             expect(await registry.getContract("contract://factory/frank", 137)).to.eq("0xbd3Afb0bB76683eCb4225F9DBc91f998713C3b01");
@@ -96,8 +99,97 @@ describe('TFContractRegistry BasicTests', () => {
                     contractAddress: '0x36fFe38DEfDcfd48a4016cFE79F3AFcDAfFe123D'
                 },
             ])
-
         });
+        
+        it('allows to delete items correctly', async() => {
+            const {registry} = await deployRegistry();
+
+            await registry.registerContract("contract://factory/anneliese", 43114,"0x36fFe38DEfDcfd48a4016cFE79F3AFcDAfFe123D");
+            await registry.registerContract("contract://factory/frank", 137,"0xbd3afb0bb76683ecb4225f9dbc91f998713c3b01");
+            await registry.registerContract("contract://factory/frank", 43114,"0x36fFe38DEfDcfd48a4016cFE79F3AFcDAfFe123D");
+            
+            await expect(registry.deleteContract("contract://factory/anneliese", 43114))
+                .to.emit(registry, 'ContractDeleted')
+                .withArgs(
+                    deployer.address,
+                    ethers.utils.keccak256(ethers.utils.toUtf8Bytes("contract://factory/anneliese")),
+                    43114)
+            ;
+            
+            expect(await registry.getContract("contract://factory/anneliese", 43114)).to.eq(ethers.constants.AddressZero);
+
+            await expect( (await registry.getContracts("contract://factory/frank")).length ).to.eq(2);
+            await expect(registry.deleteContract("contract://factory/frank", 43114))
+                .to.emit(registry, 'ContractDeleted')
+                .withArgs(
+                    deployer.address,
+                    ethers.utils.keccak256(ethers.utils.toUtf8Bytes("contract://factory/frank")),
+                    43114)
+            ;
+
+            await expect( (await registry.getContracts("contract://factory/frank")).length ).to.eq(1);
+            
+            expect(await registry.getContracts("contract://factory/frank")).to.shallowDeepEqual([
+                {
+                    networkId: 137,
+                    contractAddress: '0xbd3Afb0bB76683eCb4225F9DBc91f998713C3b01'
+                },
+            ])
+        })
+
+        it('allows to delete items correctly the other way around', async() => {
+            const {registry} = await deployRegistry();
+
+            await registry.registerContract("contract://factory/frank", 137,"0xbd3afb0bb76683ecb4225f9dbc91f998713c3b01");
+            await registry.registerContract("contract://factory/frank", 43114,"0x36fFe38DEfDcfd48a4016cFE79F3AFcDAfFe123D");
+
+            await expect( (await registry.getContracts("contract://factory/frank")).length ).to.eq(2);
+            await expect(registry.deleteContract("contract://factory/frank", 137))
+                .to.emit(registry, 'ContractDeleted')
+                .withArgs(
+                    deployer.address,
+                    ethers.utils.keccak256(ethers.utils.toUtf8Bytes("contract://factory/frank")),
+                    137)
+            ;
+
+            await expect( (await registry.getContracts("contract://factory/frank")).length ).to.eq(1);
+
+            expect(await registry.getContracts("contract://factory/frank")).to.shallowDeepEqual([
+                {
+                    networkId: 43114,
+                    contractAddress: '0x36fFe38DEfDcfd48a4016cFE79F3AFcDAfFe123D'
+                },
+            ])
+        })
+        
+        it('will replace existing entries properly', async() => {
+            const {registry} = await deployRegistry();
+
+            await expect( (await registry.getContracts("contract://factory/frank")).length ).to.eq(0);
+            
+            await registry.registerContract("contract://factory/frank", 137,"0xbd3afb0bb76683ecb4225f9dbc91f998713c3b01");
+            expect(await registry.getContract("contract://factory/frank", 137)).to.eq('0xbd3Afb0bB76683eCb4225F9DBc91f998713C3b01');
+            await expect( (await registry.getContracts("contract://factory/frank")).length ).to.eq(1);
+            
+            await registry.registerContract("contract://factory/frank", 43114,"0x36fFe38DEfDcfd48a4016cFE79F3AFcDAfFe123D");
+            await expect( (await registry.getContracts("contract://factory/frank")).length ).to.eq(2);
+            expect(await registry.getContract("contract://factory/frank", 43114)).to.eq('0x36fFe38DEfDcfd48a4016cFE79F3AFcDAfFe123D');
+            
+            await registry.registerContract("contract://factory/frank", 43114,"0xbd3afb0bb76683ecb4225f9dbc91f998713c3b01");
+            await expect( (await registry.getContracts("contract://factory/frank")).length ).to.eq(2); // <---- still 2 because we've overritten existing entry
+            expect(await registry.getContract("contract://factory/frank", 43114)).to.eq('0xbd3Afb0bB76683eCb4225F9DBc91f998713C3b01');
+
+            expect(await registry.getContracts("contract://factory/frank")).to.shallowDeepEqual([
+                {
+                    networkId: 137,
+                    contractAddress: '0xbd3Afb0bB76683eCb4225F9DBc91f998713C3b01'
+                },
+                {
+                    networkId: 43114,
+                    contractAddress: '0xbd3Afb0bB76683eCb4225F9DBc91f998713C3b01'
+                },
+            ])
+        })
 
     })
     

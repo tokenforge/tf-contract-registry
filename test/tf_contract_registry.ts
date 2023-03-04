@@ -70,7 +70,16 @@ describe('TFContractRegistry BasicTests', () => {
             expect(await registry.getContract("contract://factory/anneliese", 43114)).to.eq("0x36fFe38DEfDcfd48a4016cFE79F3AFcDAfFe123D");
             expect(await registry.getContract("contract://factory/frank", 137)).to.eq("0xbd3Afb0bB76683eCb4225F9DBc91f998713C3b01");
 
+            expect(await registry.getContractByHash(ethers.utils.keccak256(ethers.utils.toUtf8Bytes("contract://factory/frank")), 43114)).to.eq("0x36fFe38DEfDcfd48a4016cFE79F3AFcDAfFe123D");
+            
             expect(await registry.getContracts("contract://factory/anneliese")).to.shallowDeepEqual([
+                {
+                    networkId: 43114,
+                    contractAddress: '0x36fFe38DEfDcfd48a4016cFE79F3AFcDAfFe123D'
+                },
+            ])
+
+            expect(await registry.getContractsByHash(ethers.utils.keccak256(ethers.utils.toUtf8Bytes("contract://factory/anneliese")))).to.shallowDeepEqual([
                 {
                     networkId: 43114,
                     contractAddress: '0x36fFe38DEfDcfd48a4016cFE79F3AFcDAfFe123D'

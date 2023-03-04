@@ -20,14 +20,9 @@ contract TFContractRegistry is AccessControlEnumerable {
     bytes32 public constant REGISTRAR_ROLE = keccak256("REGISTRAR_ROLE");
 
     /**
-     * @dev Throws if called by any account other than the owner.
+     * @dev Throws if called by any account other than the registrar.
      */
-    modifier onlyAdmin() {
-        require(hasRole(DEFAULT_ADMIN_ROLE, _msgSender()), "TFContractRegistry: caller is not the owner nor admin");
-        _;
-    }
-
-    modifier onlyGovernor() {
+    modifier onlyRegistrar() {
         require(
             hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) || hasRole(REGISTRAR_ROLE, _msgSender()),
             "TFContractRegistry: caller has no governor role and no admin role"
@@ -47,12 +42,12 @@ contract TFContractRegistry is AccessControlEnumerable {
         return keccak256(abi.encodePacked(key));
     }
 
-    function registerContract(string memory key, uint64 networkId, address _address) public onlyGovernor {
+    function registerContract(string memory key, uint64 networkId, address _address) public onlyRegistrar {
         bytes32 _hash = getHashForKey(key);
         registerContractByHash(_hash, networkId, _address);
     }
 
-    function registerContractByHash(bytes32 key, uint64 networkId, address _address) public onlyGovernor {
+    function registerContractByHash(bytes32 key, uint64 networkId, address _address) public onlyRegistrar {
         _contractsByNetworkId[key][networkId] = _address;
         _contracts[key].push( ContractItem({
             networkId: networkId,

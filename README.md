@@ -1,4 +1,4 @@
-# E-Sec Token Contracts
+# TokenForge Contracts-Registry
 
 ## Installation / Setup
 

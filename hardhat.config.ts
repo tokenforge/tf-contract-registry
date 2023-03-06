@@ -27,11 +27,6 @@ const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || '';
 const PRIVATE_KEY_MAINNET = process.env.PRIVATE_KEY_MAINNET || '';
 
 console.log("INFURA: ", INFURA_API_KEY)
-console.log(node_url('rinkeby'));
-
-const PRIVATE_KEY_RINKEBY =
-    process.env.PRIVATE_KEY_RINKEBY! ||
-    '0xc87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3'; // well known private key
 
 
 const config: HardhatUserConfig = {
@@ -48,7 +43,7 @@ const config: HardhatUserConfig = {
     },
 
     namedAccounts: {
-        deployer: 0,
+        deployer: 9,
         admin: 0,
         backend: 1,
     },
@@ -74,7 +69,14 @@ const config: HardhatUserConfig = {
             url: node_url('goerli'),
             accounts: accounts('goerli'),
             gas: 2100000,
-            gasPrice: 8000000000
+            gasPrice: 225000000000,
+        },
+        sepolia: {
+            url: 'https://eth-sepolia.g.alchemy.com/v2/NzrHZD6MmT-XyTXX3FUnbQR6yFhKHZ_O',
+            accounts: accounts('sepolia'),
+            gas: 2100000,
+            gasPrice: 225000000000,
+            chainId: 11155111,
         },
         arbitrum_goerli: {
             url: node_url('ARBITRUM_GOERLI'),
@@ -99,12 +101,29 @@ const config: HardhatUserConfig = {
             gasPrice: 225000000000,
             chainId: 43114,
             accounts: accounts('fuji'),
+        },
+        tokenForge: {
+            url: 'https://avax.fuji2.token-forge.io',
+            gasPrice: 225000000000,
+            chainId: 67443,
+            accounts: accounts('fuji'),
         }
+        
     }),
     etherscan: {
         // Your API key for Etherscan
         // Obtain one at https://etherscan.io/
         apiKey: ETHERSCAN_API_KEY,
+
+        /**
+         *
+         * sepolia: {
+         *     chainId: 11155111,
+         *     urls: {
+         *       apiURL: "https://api-sepolia.etherscan.io/api",
+         *       browserURL: "https://sepolia.etherscan.io",
+         *     },
+         *   },         */
     },
 
     paths: {

@@ -21,7 +21,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
         "grantRole",
         roleId,
         registrar,
-        
     );
     
     log("Ready.");

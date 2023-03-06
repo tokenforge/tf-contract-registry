@@ -3,7 +3,8 @@
 
 node_modules
 cache/
-artifacts/
+artifacts/*
+!artifacts/contracts
 
 .vscode/*
 !.vscode/settings.json.default
@@ -12,7 +13,7 @@ artifacts/
 
 typechain/*
 typechain-types/*
-yarn.lock
+
 yarn_error.log
 
 .yalc

@@ -1,6 +1,6 @@
 {
   "name": "tf-contract-registry",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "TokenForge SmartContract Registry for Factories",
   "main": "index.js",
   "scripts": {

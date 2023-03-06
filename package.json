@@ -1,7 +1,7 @@
 {
   "name": "tf-contract-registry",
-  "version": "1.0.3",
-  "description": "",
+  "version": "1.0.4",
+  "description": "TokenForge SmartContract Registry for Factories",
   "main": "index.js",
   "scripts": {
     "docs": "oz-docs",
@@ -48,12 +48,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@gitlab.com:tokenforge-gmbh/contracts/tf-nft-contracts.git"
+    "url": "git@github.com:tokenforge/tf-contract-registry.git"
   },
   "author": "Hagen Hübel <hagen@token-forge.io>",
   "license": "(C) 2022 by TokenForge GmbH",
   "bugs": {
-    "url": "git@gitlab.com:tokenforge-gmbh/contracts/tf-nft-contracts.git"
+    "url": "git@github.com:tokenforge/tf-contract-registry.git"
   },
   "homepage": "https://token-forge.io",
   "devDependencies": {

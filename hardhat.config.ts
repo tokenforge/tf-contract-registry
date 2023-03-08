@@ -103,9 +103,9 @@ const config: HardhatUserConfig = {
             accounts: accounts('fuji'),
         },
         tokenForge: {
-            url: 'https://avax.fuji2.token-forge.io',
+            url: 'https://testnet.rpc.token-forge.io',
             gasPrice: 225000000000,
-            chainId: 67443,
+            chainId: 67444,
             accounts: accounts('fuji'),
         }
         

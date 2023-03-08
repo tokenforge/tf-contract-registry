@@ -113,8 +113,20 @@ const config: HardhatUserConfig = {
     etherscan: {
         // Your API key for Etherscan
         // Obtain one at https://etherscan.io/
-        apiKey: ETHERSCAN_API_KEY,
+        apiKey: {
+            tokenForge: ETHERSCAN_API_KEY
+        },
 
+        customChains: [
+            {
+                network: "tokenForge",
+                chainId: 67444,
+                urls: {
+                    apiURL: "https://testnet.token-forge.io/api",
+                    browserURL: "https://testnet.token-forge.io"
+                }
+            }
+        ]        
         /**
          *
          * sepolia: {

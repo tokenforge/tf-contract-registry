@@ -102,12 +102,18 @@ const config: HardhatUserConfig = {
             chainId: 43114,
             accounts: accounts('fuji'),
         },
-        tokenForge: {
+        tokenforge: {
             url: 'https://testnet.rpc.token-forge.io',
             gasPrice: 225000000000,
             chainId: 67444,
-            accounts: accounts('fuji'),
-        }
+            accounts: accounts('tokenforge'),
+            tags: ['dev', 'staging'],
+            verify: {
+                etherscan: {
+                    apiUrl: 'http://91.107.202.60:4000'
+                }
+            }
+        },
         
     }),
     etherscan: {
@@ -119,7 +125,7 @@ const config: HardhatUserConfig = {
 
         customChains: [
             {
-                network: "tokenForge",
+                network: "tokenforge",
                 chainId: 67444,
                 urls: {
                     apiURL: "https://testnet.token-forge.io/api",

@@ -22,6 +22,7 @@
     "verify-mumbai": "hardhat --network mumbai etherscan-verify --api-key 7PFAPZM322EUWWBPD6CI5BXQX9AEB8U8CK",
     "verify-matic": "hardhat --network matic etherscan-verify --api-key 7PFAPZM322EUWWBPD6CI5BXQX9AEB8U8CK",
     "verify-fuji": "hardhat --network fuji etherscan-verify --api-key SCSU2Z9Q734JSU2KQQZSBIC6KM75GU1H8T",
+    "verify-tokenforge": "hardhat --network tokenforge etherscan-verify --api-key 7PFAPZM322EUWWBPD6CI5BXQX9AEB8U8CK",
     "verify-sepolia": "hardhat --network  sepolia etherscan-verify --api-key ZW5EVBSB7EJMNGTD4NHARNDUPTE54CRA1M",
     "prepare": "node ./.setup.js && hardhat typechain && husky install",
     "lint": "eslint \"**/*.{js,ts}\" && solhint src/**/*.sol",

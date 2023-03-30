@@ -72,43 +72,40 @@ contract TFContractRegistry is AccessControlEnumerable {
         _contractsByNetworkId[key][networkId] = _address;
 
         bool updated = false;
-        for(uint256 i = 0; i < _contracts[key].length; i++) {
-            if(_contracts[key][i].networkId == networkId) {
+        for (uint256 i = 0; i < _contracts[key].length; i++) {
+            if (_contracts[key][i].networkId == networkId) {
                 _contracts[key][i].contractAddress = _address;
                 updated = true;
                 break;
             }
         }
-        
-        if(!updated) {
-            _contracts[key].push( ContractItem({
-                networkId: networkId,
-                contractAddress: _address
-            }));
+
+        if (!updated) {
+            _contracts[key].push(ContractItem({networkId: networkId, contractAddress: _address}));
         }
-        
+
         emit ContractRegistered(msg.sender, key, networkId, _address);
     }
 
     function deleteContractByHash(bytes32 key, uint64 networkId) public onlyRegistrar {
         delete _contractsByNetworkId[key][networkId];
-        
-        for(uint256 i = 0; i < _contracts[key].length; i++) {
-            if(_contracts[key][i].networkId == networkId) {
+
+        for (uint256 i = 0; i < _contracts[key].length; i++) {
+            if (_contracts[key][i].networkId == networkId) {
                 _removeItemInArray(key, i);
             }
         }
-        
+
         emit ContractDeleted(msg.sender, key, networkId);
     }
 
     function _removeItemInArray(bytes32 key, uint index) internal {
-        for(uint i = index; i < _contracts[key].length-1; i++){
-            _contracts[key][i] = _contracts[key][i+1];
+        for (uint i = index; i < _contracts[key].length - 1; i++) {
+            _contracts[key][i] = _contracts[key][i + 1];
         }
         _contracts[key].pop();
-    }    
-    
+    }
+
     function getContract(string memory key, uint64 networkId) public view returns (address) {
         return _contractsByNetworkId[getHashForKey(key)][networkId];
     }
@@ -124,6 +121,4 @@ contract TFContractRegistry is AccessControlEnumerable {
     function getContractsByHash(bytes32 key) public view returns (ContractItem[] memory) {
         return _contracts[key];
     }
-
 }
-
